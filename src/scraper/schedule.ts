@@ -91,16 +91,17 @@ export async function GetSchedule(c: string): Promise<{
   success: boolean;
   data: Courses[];
 }> {
-  console.log("received cookies: ", c);
-
   try {
-    const response = await got("https://imaluum.iium.edu.my/schedule", {
-      headers: {
-        Cookie: c,
-      },
-      https: { rejectUnauthorized: false },
-      followRedirect: false,
-    } as GotBodyOptions<string>);
+    const response = await got(
+      "https://imaluum.iium.edu.my/MyAcademic/schedule",
+      {
+        headers: {
+          Cookie: c,
+        },
+        https: { rejectUnauthorized: false },
+        followRedirect: false,
+      } as GotBodyOptions<string>
+    );
 
     const root = parse(response.body);
 
