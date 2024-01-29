@@ -30,7 +30,7 @@ The following are guides for this api usage.
 ### Request
 `POST /login`
 ```
-curl -i -X POST -H "Content-Type: application/json" -d '{"username": "matricnumber", "password": "yourpassword" }' http://localhost:3000/login
+curl -X POST -H "Content-Type: application/json" -d '{"username": "matricnumber", "password": "yourpassword" }' http://localhost:3000/login
 ```
 ### Response
 ```
