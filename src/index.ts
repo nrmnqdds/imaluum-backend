@@ -1,14 +1,15 @@
-import { Hono } from "https://deno.land/x/hono@v3.4.1/mod.ts";
+import { serve } from "@hono/node-server";
+import { Hono } from "hono";
 import { ImaluumLogin } from "./scraper/login";
 import { GetSchedule } from "./scraper/schedule";
-import { setCookie } from "https://deno.land/x/hono@v3.12.8/helper/cookie/index.ts";
-import { cors } from "https://deno.land/x/hono@v3.12.8/middleware/cors/index.ts";
-import { prettyJSON } from "https://deno.land/x/hono@v3.12.8/middleware/pretty-json/index.ts"
+import { setCookie, getCookie } from "hono/cookie";
+import { cors } from "hono/cors";
+import { prettyJSON } from "hono/pretty-json";
 
 const app = new Hono();
 
-app.use("*", cors());
 app.use("*", prettyJSON());
+app.use("*", cors());
 
 app.get("/", (c) => {
   return c.json({
@@ -72,4 +73,7 @@ app.get("/schedule", async (c) => {
 const port = 3000;
 console.log(`Server is running on port ${port}`);
 
-Deno.serve(app.fetch);
+serve({
+  fetch: app.fetch,
+  port,
+});
