@@ -2,13 +2,11 @@ import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { ImaluumLogin } from "./scraper/login";
 import { GetSchedule } from "./scraper/schedule";
-import { setCookie, getCookie } from "hono/cookie";
+import { setCookie } from "hono/cookie";
 import { cors } from "hono/cors";
-import { prettyJSON } from "hono/pretty-json";
 
 const app = new Hono();
 
-app.use("*", prettyJSON());
 app.use("*", cors());
 
 app.get("/", (c) => {
