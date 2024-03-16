@@ -5,7 +5,7 @@ type Subject = {
 	courseName: string;
 	section: string;
 	chr: string;
-	timestamps: WeekTime[];
+	timestamps: WeekTime;
 	venue: string;
 	lecturer: string;
 };
@@ -13,7 +13,7 @@ type Subject = {
 type WeekTime = {
 	start: string;
 	end: string;
-	day: number | undefined;
+	day: number;
 };
 
 type TimetableConfig = {
@@ -27,25 +27,4 @@ type Courses = {
 	schedule: Subject[];
 	sessionName: string;
 	sessionQuery: string;
-};
-
-type Cgpa = {
-	sessionName: string;
-	gpaValue: string;
-	cgpaValue: string;
-};
-
-type Result = {
-	sessionName: string;
-	sessionQuery: string;
-	gpaValue: string;
-	cgpaValue: string;
-	status: string;
-	remarks: string;
-	result: {
-		courseCode: string;
-		courseName: string;
-		courseGrade: string;
-		courseCredit: string;
-	}[];
 };

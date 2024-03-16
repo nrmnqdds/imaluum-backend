@@ -28,7 +28,8 @@ const semester = 2;
 
 async function main() {
 	console.time("fetching");
-	const allData = []; // Array to store data for each kuly
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	const allData: any[] = []; // Array to store data for each kuly
 
 	// Create an array of promises for each fetch request
 	const fetchPromises = KULY.map(async (kuly) => {
@@ -64,22 +65,6 @@ async function main() {
 					venue: x.venue,
 					weekTimes: timestamps,
 				});
-
-				// allData.push({
-				// 	course: {
-				// 		code: x.code,
-				// 		name: x.title,
-				// 		credit_hours: x.chr,
-				// 		university: "IIUM",
-				// 		faculty: kuly,
-				// 	},
-				// 	section: x.sect,
-				// 	session: ses,
-				// 	semester: sem,
-				// 	venues: x.venue,
-				// 	lecturers: x.lect,
-				// 	week_times: timestamps,
-				// });
 			}
 		}
 	});

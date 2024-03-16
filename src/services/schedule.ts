@@ -4,15 +4,18 @@ import got, { type GotBodyOptions } from "got";
 import moment from "moment";
 import { parse } from "node-html-parser";
 
-const getSchedule = async (
+const getScheduleFromSession = async (
 	sessionQuery: string,
 	sessionName: string,
 	c: string,
-): Promise<{
-	sessionQuery: string;
-	sessionName: string;
-	schedule: Subject[];
-}> => {
+): Promise<
+	| {
+			sessionQuery: string;
+			sessionName: string;
+			schedule: Subject[];
+	  }
+	| undefined
+> => {
 	const url = `https://imaluum.iium.edu.my/MyAcademic/schedule${sessionQuery}`;
 
 	if (!c) {
@@ -40,52 +43,149 @@ const getSchedule = async (
 		for (const row of rows) {
 			const tds = row.querySelectorAll("td");
 
+			if (tds.length === 0 || !tds) {
+				continue;
+			}
+
 			// Check if tds array has enough elements
-			if (tds.length >= 9) {
+			if (tds.length === 9) {
 				const courseCode = tds[0].textContent.trim();
 				const courseName = tds[1].textContent.trim();
-				const section = parseInt(tds[2].textContent.trim(), 10).toString();
-				const chr = parseInt(tds[3].textContent.trim(), 10).toString();
+				const section = tds[2].textContent.trim();
+				const chr = tds[3].textContent.trim();
 				const days = tds[5].textContent
 					.trim()
 					.replace(/ /gi, "")
 					.split("-")
 					.map((x) => {
-						if (x === "M" || x === "MON") return 1;
-						if (x === "T" || x === "TUE") return 2;
-						if (x === "W" || x === "WED") return 3;
-						if (x === "TH" || x === "THUR") return 4;
-						if (x === "F" || x === "FRI") return 5;
+						if (x.includes("SUN")) return 0;
+						if (x === "M" || x.includes("MON")) return 1;
+						if (x === "T" || x.includes("TUE")) return 2;
+						if (x === "W" || x.includes("WED")) return 3;
+						if (x === "TH" || x.includes("THUR")) return 4;
+						if (x === "F" || x.includes("FRI")) return 5;
+						if (x.includes("SAT")) return 6;
 					});
+				if (!days) {
+					continue;
+				}
 
 				// Split the days array if it has more than one item
 				const splitDays = days.length > 1 ? [...days] : days;
-				const time = tds[6].textContent.trim().replace(/ /gi, "").split("-");
+				if (!splitDays) {
+					continue;
+				}
 
-				if (time.length === 0) continue;
+				const timetemp = tds[6].textContent;
+				if (!timetemp) {
+					continue;
+				}
 
-				const start = moment(time[0], "Hmm").format("HH:mm:ssZ").toString();
-				const end = moment(time[1], "Hmm").format("HH:mm:ssZ").toString();
+				const time = timetemp.trim().replace(/ /gi, "").split("-");
+
+				let start: moment.Moment | string = moment(time[0], "Hmm");
+				if (!start.isValid()) {
+					continue;
+				}
+				start = start.format("HH:mm:ssZ");
+				let end: moment.Moment | string = moment(time[1], "Hmm");
+				if (!end.isValid()) {
+					continue;
+				}
+				end = end.format("HH:mm:ssZ");
+
 				const venue = tds[7].textContent.trim();
 				const lecturer = tds[8].textContent.trim();
 
 				// Add each split day as a separate entry in the schedule
 				for (const splitDay of splitDays) {
+					if (!splitDay) {
+						continue;
+					}
 					schedule.push({
 						id: `${courseCode}-${section}-${splitDays.indexOf(splitDay)}`,
 						courseCode,
 						courseName,
 						section,
 						chr,
-						timestamps: [{ start, end, day: splitDay }],
+						timestamps: { start, end, day: splitDay },
+						venue,
+						lecturer,
+					});
+				}
+			}
+
+			if (tds.length === 4) {
+				const courseCode: string = schedule[schedule.length - 1].courseCode;
+				const courseName: string = schedule[schedule.length - 1].courseName;
+				const section: string = schedule[schedule.length - 1].section;
+				const chr: string = schedule[schedule.length - 1].chr;
+				const days = tds[0].textContent
+					.trim()
+					.replace(/ /gi, "")
+					.split("-")
+					.map((x) => {
+						if (x.includes("SUN")) return 0;
+						if (x === "M" || x.includes("MON")) return 1;
+						if (x === "T" || x.includes("TUE")) return 2;
+						if (x === "W" || x.includes("WED")) return 3;
+						if (x === "TH" || x.includes("THUR")) return 4;
+						if (x === "F" || x.includes("FRI")) return 5;
+						if (x.includes("SAT")) return 6;
+					});
+
+				if (!days) {
+					continue;
+				}
+				// Split the days array if it has more than one item
+				const splitDays = days.length > 1 ? [...days] : days;
+				if (!splitDays) {
+					continue;
+				}
+
+				const timetemp = tds[1].textContent;
+				if (!timetemp) {
+					continue;
+				}
+
+				const time = timetemp.trim().replace(/ /gi, "").split("-");
+
+				let start: moment.Moment | string = moment(time[0], "Hmm");
+				if (!start.isValid()) {
+					continue;
+				}
+				start = start.format("HH:mm:ssZ");
+				let end: moment.Moment | string = moment(time[1], "Hmm");
+				if (!end.isValid()) {
+					continue;
+				}
+				end = end.format("HH:mm:ssZ");
+
+				const venue = tds[2].textContent.trim();
+				const lecturer = tds[3].textContent.trim();
+
+				// Add each split day as a separate entry in the schedule
+				for (const splitDay of splitDays) {
+					if (!splitDay) {
+						continue;
+					}
+					schedule.push({
+						id: `${courseCode}-${section}-${splitDays.indexOf(splitDay)}`,
+						courseCode,
+						courseName,
+						section,
+						chr,
+						timestamps: { start, end, day: splitDay },
 						venue,
 						lecturer,
 					});
 				}
 			}
 		}
-
-		return { sessionQuery, sessionName, schedule };
+		if (schedule && Array.isArray(schedule)) {
+			// console.table(schedule);
+			return { sessionQuery, sessionName, schedule };
+		}
 	} catch (err) {
 		console.log("err", err);
 		throw new Error("Failed to fetch schedule");
@@ -122,21 +222,37 @@ export async function GetSchedule(c: string): Promise<{
 		});
 
 		const results = await Promise.all(
-			sessionList.map(({ sessionQuery, sessionName }) =>
-				getSchedule(sessionQuery as string, sessionName as string, c as string),
-			),
+			(sessionList as { sessionName: string; sessionQuery: string }[])
+				.filter((session) => session !== undefined)
+				.map(({ sessionName, sessionQuery }) =>
+					getScheduleFromSession(sessionQuery, sessionName, c),
+				),
 		);
 
-		const resultData = results.map((result) => ({
-			schedule: result.schedule,
-			sessionName: result.sessionName,
-			sessionQuery: result.sessionQuery,
-		}));
+		if (!results || results.length === 0) {
+			throw new Error("Invalid schedule");
+		}
 
-		return {
-			success: true,
-			data: resultData,
-		};
+		const resultData = [];
+		for (const result of results) {
+			if (!result) {
+				continue;
+			}
+			resultData.push({
+				schedule: result.schedule,
+				sessionName: result.sessionName,
+				sessionQuery: result.sessionQuery,
+			});
+		}
+
+		if (resultData && Array.isArray(resultData)) {
+			return {
+				success: true,
+				data: resultData,
+			};
+		}
+
+		throw new Error("No schedule found");
 	} catch (err) {
 		console.log("err", err);
 		throw new Error("Failed to fetch schedule");
