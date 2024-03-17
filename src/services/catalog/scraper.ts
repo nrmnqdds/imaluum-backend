@@ -75,7 +75,7 @@ async function main() {
 	// Write the data to a file
 	const jsonData = JSON.stringify(allData, null, 2);
 
-	fs.writeFileSync("./", jsonData);
+	fs.writeFileSync("./src/services/catalog/data.json", jsonData);
 
 	console.timeEnd("fetching");
 }

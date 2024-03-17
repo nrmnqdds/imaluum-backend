@@ -1,6 +1,6 @@
 on:
   schedule:
-    - cron: '0 0 1 * *'  # Runs on the 1st day of every month at 00:00 UTC
+    - cron: '0 0 */2 * *'  # Runs every 2 days at 00:00 UTC
 name: ✨ Albiruni-Fetcher
 jobs:
   build:
@@ -17,17 +17,16 @@ jobs:
 
       - name: 🔨 Build Project
         run: |
-          npm install
-        # bun run build
+          npm ci
 
       - name: 🚧 Scrape
-        run: node src/dragon-scraper/main.ts
+        run: node src/services/catalog/scraper.ts
 
       - name: 👷 Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.DRAGONDEX_TOKEN }}
-          commit-message: "🗃️ Update Dragons Catalog from ${{ github.run_id }}"
-          title: "🗃️ Update Dragons Catalog"
-          branch: dragondex-fetcher
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "🗃️ Update Albiruni Catalog from ${{ github.run_id }}"
+          title: "🗃️ Update Albiruni Catalog"
+          branch: albiruni-fetcher
           base: main
