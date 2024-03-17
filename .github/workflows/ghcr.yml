@@ -36,7 +36,7 @@ jobs:
           password: ${{ secrets.SSH_PASS }}
           script: |
             sed -i "s+ghcr.io/nrmnqdds/imaluum-backend.*+ghcr.io/nrmnqdds/imaluum-backend:${{ github.ref_name }}'+g" /root/docker-compose.yaml
-            docker compose down
-            docker compose up -d
+            docker compose pull
+            docker-compose up --force-recreate --build -d
             docker image prune -f
             cat docker-compose.yaml
