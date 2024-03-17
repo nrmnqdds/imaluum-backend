@@ -1,0 +1,33 @@
+on:
+  schedule:
+    - cron: '0 0 1 * *'  # Runs on the 1st day of every month at 00:00 UTC
+name: ✨ Albiruni-Fetcher
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v4
+
+      - name: 🍞 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "latest"
+
+      - name: 🔨 Build Project
+        run: |
+          npm install
+        # bun run build
+
+      - name: 🚧 Scrape
+        run: node src/dragon-scraper/main.ts
+
+      - name: 👷 Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.DRAGONDEX_TOKEN }}
+          commit-message: "🗃️ Update Dragons Catalog from ${{ github.run_id }}"
+          title: "🗃️ Update Dragons Catalog"
+          branch: dragondex-fetcher
+          base: main

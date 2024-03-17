@@ -1,15 +1,11 @@
-# use the official Bun image
-# see all versions at https://hub.docker.com/r/oven/bun/tags
-FROM node:20 as base
+LABEL org.opencontainers.image.source https://github.com/nrmnqdds/imaluum-backend
+
+FROM node:20-buster-slim as base
 WORKDIR /usr/src/app
 
 # copy production dependencies and source code into final image
 FROM base AS release
 COPY . .
-RUN npm install
+RUN npm ci
 
-# run the app
-# USER bun
-EXPOSE 3000/tcp
-
-# ENTRYPOINT [ "bun", "--import", "tsx", "src/index.ts"]
+ENTRYPOINT ["node", "--import", "tsx", "src/index.ts"]

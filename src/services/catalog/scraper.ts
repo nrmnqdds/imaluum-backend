@@ -1,4 +1,4 @@
-const fs = require("fs");
+const fs = require("node:fs");
 
 const KULY = [
 	"KAHS",
@@ -75,7 +75,7 @@ async function main() {
 	// Write the data to a file
 	const jsonData = JSON.stringify(allData, null, 2);
 
-	fs.writeFileSync("./data.json", jsonData);
+	fs.writeFileSync("./", jsonData);
 
 	console.timeEnd("fetching");
 }

@@ -1,8 +1,9 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
-import { getCookie, setCookie } from "hono/cookie";
+import { setCookie } from "hono/cookie";
 import { cors } from "hono/cors";
 import { prettyJSON } from "hono/pretty-json";
+import { GetCatalog } from "./services/catalog";
 import { ImaluumLogin } from "./services/login";
 import { GetResult } from "./services/result";
 import { GetSchedule } from "./services/schedule";
@@ -95,6 +96,14 @@ app.get("/result", async (c) => {
 			message: "Failed to get result. Please login first.",
 		});
 	}
+});
+
+// Get all params at once
+app.get("/catalog", async (c) => {
+	const { subject } = c.req.query();
+	const data = await GetCatalog(subject);
+
+	return c.json(data);
 });
 
 const port = 3000;

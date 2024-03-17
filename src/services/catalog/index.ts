@@ -1,24 +1,19 @@
-import IMALUUMSCHEDULE from "/data.json";
+import IMALUUMSCHEDULE from "./data.json";
 
 // how-to:
-// - GET /api/timetables/imaluum
-// - GET /api/timetables/imaluum?subject=csci
-// - GET /api/timetables/imaluum?subject=mathematics
+// - GET /catalog
+// - GET /catalog?subject=csci
+// - GET /catalog?subject=mathematics
 
-export async function GetCatalog() {
-	const url = new URL(request.url);
-
-	const subject = url.searchParams.get("subject");
-
+export async function GetCatalog(subject: string) {
 	if (subject) {
 		const schedules = IMALUUMSCHEDULE.filter(
 			(schedule) =>
 				schedule.code.toLowerCase().includes(subject.toLowerCase()) ||
 				schedule.title.toLowerCase().includes(subject.toLowerCase()),
 		);
-
-		return NextResponse.json(schedules);
+		return schedules;
 	}
 
-	return NextResponse.json(IMALUUMSCHEDULE);
+	return IMALUUMSCHEDULE;
 }
