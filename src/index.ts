@@ -1,41 +1,25 @@
 import { serve } from "@hono/node-server";
 import { swaggerUI } from "@hono/swagger-ui";
 import { Hono } from "hono";
-import { setCookie } from "hono/cookie";
+import { getCookie, setCookie } from "hono/cookie";
 import { cors } from "hono/cors";
 import { prettyJSON } from "hono/pretty-json";
 import { GetCatalog } from "./services/catalog";
 import { ImaluumLogin } from "./services/login";
 import { GetResult } from "./services/result";
 import { GetSchedule } from "./services/schedule";
+import OpenAPIDefinition from "./openapi/definition.json"
 
 const app = new Hono();
 
 app.use("*", prettyJSON());
 app.use("*", cors());
 
-// app.get("/", swaggerUI({ url: "/swagger.json" }));
+app.get("/", swaggerUI({ url: "/doc" }));
 
-app.get("/", (c) => {
-	return c.json({
-		title: "Welcome to i-Ma'luum Backend!",
-		description: [
-			"A scraper to get i-Ma'luum data for good purposes.",
-			"Instruction for usage is available at the github repository.",
-			"Any contribution is welcomed!",
-			"This project is not affiliated with IIUM.",
-		],
-		author: "@nrmnqdds",
-		github: "https://github.com/nrmnqdds/imaluum-backend",
-		quickstart: [
-			"POST /login {username, password}",
-			"GET /schedule",
-			"GET /result",
-			"GET /catalog",
-			"GET /catalog?subject=csci",
-		],
-	});
-});
+app.get("/doc", (c)=> {
+	return c.json(OpenAPIDefinition)
+})
 
 app.post("/login", async (c) => {
 	try {
@@ -71,11 +55,12 @@ app.post("/login", async (c) => {
 
 app.get("/schedule", async (c) => {
 	try {
-		const cookies = c.req.header("Cookie");
-		if (!cookies) {
+		// const cookies = c.req.header("Cookie");
+		const cookie = getCookie(c, 'MOD_AUTH_CAS')
+		if (!cookie) {
 			throw new Error("No cookies provided!");
 		}
-		const res = await GetSchedule(cookies);
+		const res = await GetSchedule(`MOD_AUTH_CAS=${cookie}`);
 		return c.json(res);
 	} catch (err) {
 		return c.json({
@@ -87,12 +72,12 @@ app.get("/schedule", async (c) => {
 
 app.get("/result", async (c) => {
 	try {
-		const cookies = c.req.header("Cookie");
-		if (!cookies) {
+		const cookie = getCookie(c, 'MOD_AUTH_CAS')
+		if (!cookie) {
 			throw new Error("No cookies provided!");
 		}
 
-		const res = await GetResult(cookies);
+		const res = await GetResult(`MOD_AUTH_CAS=${cookie}`);
 		return c.json(res);
 	} catch (err) {
 		return c.json({
@@ -103,8 +88,8 @@ app.get("/result", async (c) => {
 });
 
 app.get("/catalog", async (c) => {
-	const { subject } = c.req.query();
-	const data = await GetCatalog(subject);
+	const { subject, limit } = c.req.query();
+	const data = await GetCatalog(subject, parseInt(limit, 10));
 
 	return c.json(data);
 });

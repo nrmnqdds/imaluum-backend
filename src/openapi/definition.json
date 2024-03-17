@@ -1,0 +1,213 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"version": "1.0.0",
+		"title": "i-Ma'luum Backend",
+		"description": "A scraper to get i-Ma'luum data for good purposes."
+	},
+	"paths": {
+		"/login": {
+			"post": {
+				"summary": "Log in to your i-Ma'luum account",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"username": {
+										"type": "string"
+									},
+									"password": {
+										"type": "string"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Success value and all the cookies needed to get other data",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": {
+											"type": "boolean"
+										},
+										"matricNo": {
+											"type": "string"
+										},
+										"cookies": {
+											"type": "object"
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Wrong method or API didn't exist",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": {
+											"type": "boolean"
+										},
+										"message": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/schedule": {
+			"get": {
+				"summary": "Get your i-Ma'luum schedule for every session",
+				"responses": {
+					"200": {
+						"description": "Schedule data",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": {
+											"type": "boolean"
+										},
+										"data": {
+											"type": "object"
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Wrong method or API didn't exist",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": {
+											"type": "boolean"
+										},
+										"message": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/result": {
+			"get": {
+				"summary": "Get your i-Ma'luum result for every session",
+				"responses": {
+					"200": {
+						"description": "Result data",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": {
+											"type": "boolean"
+										},
+										"data": {
+											"type": "object"
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Wrong method or API didn't exist",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": {
+											"type": "boolean"
+										},
+										"message": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/catalog": {
+			"get": {
+				"summary": "Take a look at every subject available and its data",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "subject",
+						"schema": {
+							"type" : "string"
+						},
+						"description": "Subject code or name to get the data from"
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"schema": {
+							"type" : "integer"
+						},
+						"description": "Limit of data you want to query"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Catalog data",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Wrong method or API didn't exist",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": {
+											"type": "boolean"
+										},
+										"message": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
