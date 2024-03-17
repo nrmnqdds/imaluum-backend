@@ -69,10 +69,15 @@ app.get("/schedule", async (c) => {
 	if (!cookies) {
 		throw new Error("No cookies provided!");
 	}
-
-	const res = await GetSchedule(cookies);
-
-	return c.json(res);
+	try {
+		const res = await GetSchedule(cookies);
+		return c.json(res);
+	} catch (err) {
+		return c.json({
+			success: false,
+			message: "Failed to get schedule. Please login first.",
+		});
+	}
 });
 
 app.get("/result", async (c) => {
@@ -81,9 +86,15 @@ app.get("/result", async (c) => {
 		throw new Error("No cookies provided!");
 	}
 
-	const res = await GetResult(cookies);
-
-	return c.json(res);
+	try {
+		const res = await GetResult(cookies);
+		return c.json(res);
+	} catch (err) {
+		return c.json({
+			success: false,
+			message: "Failed to get result. Please login first.",
+		});
+	}
 });
 
 const port = 3000;
