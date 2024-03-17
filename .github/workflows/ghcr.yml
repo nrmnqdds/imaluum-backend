@@ -31,9 +31,9 @@ jobs:
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.HOST }}
+          host: ${{ secrets.SSH_HOST }}
           username: root
-          password: ${{ secrets.PASS }}
+          password: ${{ secrets.SSH_PASS }}
           script: |
             sed -i "s+ghcr.io/nrmnqdds/imaluum-backend.*+ghcr.io/nrmnqdds/imaluum-backend:${{ github.ref_name }}+g" /root/docker-compose.yaml
             docker compose down
