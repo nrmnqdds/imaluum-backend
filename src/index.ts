@@ -28,6 +28,8 @@ app.get("/", (c) => {
 			"POST /login {username, password}",
 			"GET /schedule",
 			"GET /result",
+			"GET /catalog",
+			"GET /catalog?subject=csci",
 		],
 	});
 });
@@ -98,7 +100,6 @@ app.get("/result", async (c) => {
 	}
 });
 
-// Get all params at once
 app.get("/catalog", async (c) => {
 	const { subject } = c.req.query();
 	const data = await GetCatalog(subject);

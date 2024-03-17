@@ -1,10 +1,10 @@
 on:
   schedule:
-    - cron: '0 0 */2 * *'  # Runs every 2 days at 00:00 UTC
+    - cron: '0 0 1 * *'  # Runs on the 1st day of every month at 00:00 UTC
 name: ✨ Albiruni-Fetcher
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latestd
 
     steps:
       - name: 🚚 Get latest code
