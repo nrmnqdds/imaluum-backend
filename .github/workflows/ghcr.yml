@@ -27,3 +27,15 @@ jobs:
         run: |
           docker build . --tag ghcr.io/nrmnqdds/imaluum-backend:${{ github.ref_name }}
           docker push ghcr.io/nrmnqdds/imaluum-backend:${{ github.ref_name }}
+
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: root
+          password: ${{ secrets.PASS }}
+          script: |
+            sed -i "s+ghcr.io/nrmnqdds/imaluum-backend.*+ghcr.io/nrmnqdds/imaluum-backend:${{ github.ref_name }}+g" /root/docker-compose.yaml
+            docker compose down
+            docker compose up -d
+            cat docker-compose.yaml

@@ -1,0 +1,6 @@
+services:
+  imaluum-backend:
+    image: 'ghcr.io/nrmnqdds/imaluum-backend:v1.1.0'
+    ports:
+      - '3000:3000'
+  
