@@ -70,11 +70,11 @@ app.post("/login", async (c) => {
 });
 
 app.get("/schedule", async (c) => {
-	const cookies = c.req.header("Cookie");
-	if (!cookies) {
-		throw new Error("No cookies provided!");
-	}
 	try {
+		const cookies = c.req.header("Cookie");
+		if (!cookies) {
+			throw new Error("No cookies provided!");
+		}
 		const res = await GetSchedule(cookies);
 		return c.json(res);
 	} catch (err) {
@@ -86,12 +86,12 @@ app.get("/schedule", async (c) => {
 });
 
 app.get("/result", async (c) => {
-	const cookies = c.req.header("Cookie");
-	if (!cookies) {
-		throw new Error("No cookies provided!");
-	}
-
 	try {
+		const cookies = c.req.header("Cookie");
+		if (!cookies) {
+			throw new Error("No cookies provided!");
+		}
+
 		const res = await GetResult(cookies);
 		return c.json(res);
 	} catch (err) {
