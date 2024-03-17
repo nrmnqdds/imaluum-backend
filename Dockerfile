@@ -1,4 +1,4 @@
-LABEL org.opencontainers.image.source https://github.com/nrmnqdds/imaluum-backend
+# LABEL org.opencontainers.image.source https://github.com/nrmnqdds/imaluum-backend
 
 FROM node:20-buster-slim as base
 WORKDIR /usr/src/app
