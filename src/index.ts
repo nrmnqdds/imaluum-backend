@@ -1,4 +1,5 @@
 import { serve } from "@hono/node-server";
+import { swaggerUI } from "@hono/swagger-ui";
 import { Hono } from "hono";
 import { setCookie } from "hono/cookie";
 import { cors } from "hono/cors";
@@ -12,6 +13,8 @@ const app = new Hono();
 
 app.use("*", prettyJSON());
 app.use("*", cors());
+
+// app.get("/", swaggerUI({ url: "/swagger.json" }));
 
 app.get("/", (c) => {
 	return c.json({
@@ -35,16 +38,15 @@ app.get("/", (c) => {
 });
 
 app.post("/login", async (c) => {
-	const body = await c.req.json();
-
-	if (!body.username || !body.password) {
-		return c.json({
-			success: false,
-			message: "Please provide username and password",
-		});
-	}
-
 	try {
+		const body = await c.req.json();
+
+		if (!body || !body.username || !body.password) {
+			return c.json({
+				success: false,
+				message: "Please provide username and password",
+			});
+		}
 		const res = await ImaluumLogin(body);
 		if (res.success && res.cookies) {
 			for (const cookie of res.cookies) {
