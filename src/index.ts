@@ -4,11 +4,12 @@ import { Hono } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
 import { cors } from "hono/cors";
 import { prettyJSON } from "hono/pretty-json";
+import OpenAPIDefinition from "./openapi/definition.json";
 import { GetCatalog } from "./services/catalog";
 import { ImaluumLogin } from "./services/login";
+import { GetProfile } from "./services/profile";
 import { GetResult } from "./services/result";
 import { GetSchedule } from "./services/schedule";
-import OpenAPIDefinition from "./openapi/definition.json"
 
 const app = new Hono();
 
@@ -17,9 +18,9 @@ app.use("*", cors());
 
 app.get("/", swaggerUI({ url: "/doc" }));
 
-app.get("/doc", (c)=> {
-	return c.json(OpenAPIDefinition)
-})
+app.get("/doc", (c) => {
+	return c.json(OpenAPIDefinition);
+});
 
 app.post("/login", async (c) => {
 	try {
@@ -53,10 +54,26 @@ app.post("/login", async (c) => {
 	}
 });
 
+app.get("/profile", async (c) => {
+	try {
+		const cookie = getCookie(c, "MOD_AUTH_CAS");
+		if (!cookie) {
+			throw new Error("No cookies provided!");
+		}
+		const res = await GetProfile(`MOD_AUTH_CAS=${cookie}`);
+		return c.json(res);
+	} catch (err) {
+		return c.json({
+			success: false,
+			message: "Failed to get profile. Please login first.",
+		});
+	}
+});
+
 app.get("/schedule", async (c) => {
 	try {
 		// const cookies = c.req.header("Cookie");
-		const cookie = getCookie(c, 'MOD_AUTH_CAS')
+		const cookie = getCookie(c, "MOD_AUTH_CAS");
 		if (!cookie) {
 			throw new Error("No cookies provided!");
 		}
@@ -72,7 +89,7 @@ app.get("/schedule", async (c) => {
 
 app.get("/result", async (c) => {
 	try {
-		const cookie = getCookie(c, 'MOD_AUTH_CAS')
+		const cookie = getCookie(c, "MOD_AUTH_CAS");
 		if (!cookie) {
 			throw new Error("No cookies provided!");
 		}
@@ -89,7 +106,7 @@ app.get("/result", async (c) => {
 
 app.get("/catalog", async (c) => {
 	const { subject, limit } = c.req.query();
-	const data = await GetCatalog(subject, parseInt(limit, 10));
+	const data = await GetCatalog(subject, Number.parseInt(limit, 10));
 
 	return c.json(data);
 });

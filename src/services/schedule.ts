@@ -1,5 +1,3 @@
-"use server";
-
 import got, { type GotBodyOptions } from "got";
 import moment from "moment";
 import { parse } from "node-html-parser";

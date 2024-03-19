@@ -70,6 +70,49 @@
 				}
 			}
 		},
+		"/profile": {
+			"get": {
+				"summary": "Get your i-Ma'luum profile data",
+				"responses": {
+					"200": {
+						"description": "Profile data",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": {
+											"type": "boolean"
+										},
+										"data": {
+											"type": "object"
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Wrong method or API didn't exist",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": {
+											"type": "boolean"
+										},
+										"message": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
 		"/schedule": {
 			"get": {
 				"summary": "Get your i-Ma'luum schedule for every session",
@@ -164,7 +207,7 @@
 						"in": "query",
 						"name": "subject",
 						"schema": {
-							"type" : "string"
+							"type": "string"
 						},
 						"description": "Subject code or name to get the data from"
 					},
@@ -172,7 +215,7 @@
 						"in": "query",
 						"name": "limit",
 						"schema": {
-							"type" : "integer"
+							"type": "integer"
 						},
 						"description": "Limit of data you want to query"
 					}
