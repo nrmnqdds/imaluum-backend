@@ -17,7 +17,7 @@ app.use("*", prettyJSON());
 app.use(
 	"*",
 	cors({
-		origin: "https://localhost:3000",
+		origin: "https://imaluum.iium.edu.my",
 		allowMethods: ["GET", "POST"],
 		allowHeaders: ["Content-Type", "Authorization"],
 		credentials: true,
@@ -43,13 +43,15 @@ app.post("/login", async (c) => {
 		const res = await ImaluumLogin(body);
 		if (res.success && res.cookies) {
 			for (const cookie of res.cookies) {
-				// console.log(cookie);
-				if (cookie.key === "MOD_AUTH_CAS") {
-					setCookie(c, "MOD_AUTH_CAS", cookie.value, {
-						expires: new Date(Date.now() + 10 * 60 * 1000),
-					});
-					break;
-				}
+				setCookie(c, cookie.key, cookie.value, {
+					expires: new Date(Date.now() + 10 * 60 * 1000),
+				});
+				// if (cookie.key === "MOD_AUTH_CAS") {
+				// 	setCookie(c, "MOD_AUTH_CAS", cookie.value, {
+				// 		expires: new Date(Date.now() + 10 * 60 * 1000),
+				// 	});
+				// 	break;
+				// }
 			}
 		}
 
