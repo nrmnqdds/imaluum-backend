@@ -6,6 +6,7 @@ import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { prettyJSON } from "hono/pretty-json";
 import OpenAPIDefinition from "./openapi/definition.json";
+import { GetAds } from "./services/ads";
 import { GetCatalog } from "./services/catalog";
 import { ImaluumLogin } from "./services/login";
 import { GetProfile } from "./services/profile";
@@ -52,12 +53,6 @@ app.post("/login", async (c) => {
 				setCookie(c, cookie.key, cookie.value, {
 					expires: new Date(Date.now() + 10 * 60 * 1000),
 				});
-				// if (cookie.key === "MOD_AUTH_CAS") {
-				// 	setCookie(c, "MOD_AUTH_CAS", cookie.value, {
-				// 		expires: new Date(Date.now() + 10 * 60 * 1000),
-				// 	});
-				// 	break;
-				// }
 			}
 		}
 
@@ -123,6 +118,12 @@ app.get("/result", async (c) => {
 app.get("/catalog", async (c) => {
 	const { subject, limit } = c.req.query();
 	const data = await GetCatalog(subject, Number.parseInt(limit, 10));
+
+	return c.json(data);
+});
+
+app.get("/ads", async (c) => {
+	const data = await GetAds();
 
 	return c.json(data);
 });
