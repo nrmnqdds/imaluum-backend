@@ -3,6 +3,7 @@ import { swaggerUI } from "@hono/swagger-ui";
 import { Hono } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
 import { cors } from "hono/cors";
+import { logger } from "hono/logger";
 import { prettyJSON } from "hono/pretty-json";
 import OpenAPIDefinition from "./openapi/definition.json";
 import { GetCatalog } from "./services/catalog";
@@ -13,7 +14,12 @@ import { GetSchedule } from "./services/schedule";
 
 const app = new Hono();
 
-app.use("*", prettyJSON());
+export const customLogger = (message: string, ...rest: string[]) => {
+	console.log(message, ...rest);
+};
+
+app.use(prettyJSON());
+app.use(logger(customLogger));
 app.use(
 	"*",
 	cors({
