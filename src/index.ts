@@ -14,7 +14,15 @@ import { GetSchedule } from "./services/schedule";
 const app = new Hono();
 
 app.use("*", prettyJSON());
-app.use("*", cors());
+app.use(
+	"*",
+	cors({
+		origin: "https://localhost:3000",
+		allowMethods: ["GET", "POST"],
+		allowHeaders: ["Content-Type", "Authorization"],
+		credentials: true,
+	}),
+);
 
 app.get("/", swaggerUI({ url: "/doc" }));
 
