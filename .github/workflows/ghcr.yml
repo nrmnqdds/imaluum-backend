@@ -37,6 +37,5 @@ jobs:
           script: |
             sed -i "s+ghcr.io/nrmnqdds/imaluum-backend.*+ghcr.io/nrmnqdds/imaluum-backend:${{ github.ref_name }}'+g" /root/docker-compose.yaml
             docker compose pull
-            docker compose up --force-recreate --build -d
-            docker image prune -f
-            cat docker-compose.yaml
+            docker compose up --force-recreate --build -d imaluum-backend
+            docker image prune -a -f
