@@ -1,5 +1,5 @@
 import { serve } from "@hono/node-server";
-import { swaggerUI } from "@hono/swagger-ui";
+import { apiReference } from "@scalar/hono-api-reference";
 import { Hono } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
 import { cors } from "hono/cors";
@@ -31,7 +31,14 @@ app.use(
 	}),
 );
 
-app.get("/", swaggerUI({ url: "/doc" }));
+app.get(
+	"/",
+	apiReference({
+		spec: {
+			url: "/doc",
+		},
+	}),
+);
 
 app.get("/doc", (c) => {
 	return c.json(OpenAPIDefinition);
