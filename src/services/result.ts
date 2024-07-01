@@ -39,12 +39,47 @@ const getResult = async (
 
 		const tds = rows[rows.length - 1].querySelectorAll("td");
 
-		const neutralized1 = tds[1].textContent.trim().split(/\s{2,}/);
+		if (
+			tds[0].textContent.trim() ===
+			"Please contact finance division regarding tuition fees"
+		) {
+			for (const row of rows) {
+				const tds = row.querySelectorAll("td");
+
+				// Check if tds array has enough elements
+				if (tds.length >= 4) {
+					const courseCode = tds[0].textContent.trim();
+					if (courseCode.split(/\s{2,}/)[0] === "Total Credit Points") {
+						break;
+					}
+					const courseName = tds[1].textContent.trim();
+					const courseGrade = tds[2].textContent.trim() || "N/A";
+					const courseCredit = tds[3].textContent.trim();
+					result.push({
+						courseCode,
+						courseName,
+						courseGrade,
+						courseCredit,
+					});
+				}
+			}
+			return {
+				sessionQuery,
+				sessionName,
+				result,
+				gpaValue: "N/A",
+				cgpaValue: "N/A",
+				status: "N/A",
+				remarks: "Please contact finance division regarding tuition fees",
+			};
+		}
+
+		const neutralized1 = tds[1].textContent.trim().split(/\s{2,}/) || [];
 		const gpaValue = neutralized1[2];
 		const status = neutralized1[3];
 		const remarks = neutralized1[4];
 
-		const neutralized2 = tds[3].textContent.trim().split(/\s{2,}/);
+		const neutralized2 = tds[3].textContent.trim().split(/\s{2,}/) || [];
 		const cgpaValue = neutralized2[2];
 
 		// Remove the last row
@@ -57,7 +92,7 @@ const getResult = async (
 			if (tds.length >= 4) {
 				const courseCode = tds[0].textContent.trim();
 				const courseName = tds[1].textContent.trim();
-				const courseGrade = tds[2].textContent.trim();
+				const courseGrade = tds[2].textContent.trim() || "N/A";
 				const courseCredit = tds[3].textContent.trim();
 				result.push({ courseCode, courseName, courseGrade, courseCredit });
 			}
