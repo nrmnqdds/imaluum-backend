@@ -49,6 +49,7 @@ app.get("/doc", (c) => {
 
 app.post("/login", async (c) => {
 	try {
+		console.time("login");
 		const body = await c.req.json();
 
 		if (!body || !body.username || !body.password) {
@@ -72,6 +73,8 @@ app.post("/login", async (c) => {
 			success: false,
 			message: "Invalid username or password",
 		});
+	} finally {
+		console.timeEnd("login");
 	}
 });
 
