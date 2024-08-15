@@ -1,6 +1,6 @@
+// import { apiReference } from "@scalar/hono-api-reference";
 import { serve } from "@hono/node-server";
 import { swaggerUI } from "@hono/swagger-ui";
-import { apiReference } from "@scalar/hono-api-reference";
 import { Hono } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
 import { cors } from "hono/cors";
@@ -16,7 +16,7 @@ import { GetSchedule } from "./services/schedule";
 
 const app = new Hono();
 
-export const customLogger = (message: string, ...rest: string[]) => {
+const customLogger = (message: string, ...rest: string[]) => {
 	console.log(message, ...rest);
 };
 
@@ -32,16 +32,16 @@ app.use(
 	}),
 );
 
-app.get(
-	"/",
-	apiReference({
-		spec: {
-			url: "/doc",
-		},
-	}),
-);
+// app.get(
+//   "/",
+//   apiReference({
+//     spec: {
+//       url: "/doc",
+//     },
+//   }),
+// );
 
-// app.get("/", swaggerUI({ url: "/doc" }));
+app.get("/", swaggerUI({ url: "/doc" }));
 
 app.get("/doc", (c) => {
 	return c.json(OpenAPIDefinition);
@@ -140,6 +140,8 @@ app.get("/ads", async (c) => {
 
 	return c.json(data);
 });
+
+// export const handler = handle(app);
 
 const port = 3000;
 console.log(`Server is running on port ${port}`);
