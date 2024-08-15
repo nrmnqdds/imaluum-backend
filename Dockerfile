@@ -29,5 +29,5 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/pnpm-lock.yaml* ./
 COPY --from=deps /app/package.json ./
 ENV NODE_ENV=production
-EXPOSE 300
+EXPOSE 3000
 CMD ["pnpm", "start"]
