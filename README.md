@@ -1,3 +1,6 @@
+> [!CAUTION]
+> **ARCHIVED** Checkout [GoMaluum](https://github.com/nrmnqdds/gomaluum-api) for latest version
+
 # Welcome to i-Ma'luum Backend 🌟
 
 <img src="https://github.com/nrmnqdds/simplified-imaluum/assets/65181897/2ad4fedc-1018-4779-b94a-5aae6f2944a3" width=100 />
